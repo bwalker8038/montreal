@@ -1,5 +1,30 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+
+  #message-list
+  #options-container
+    p
+      input(type='text', id="watch-path", placeholder='Path to Watch')
+    p
+      input(type='text', id="project-path", placeholder='Path of Solution to build');
+    p
+      input(type='checkbox', id="build-single-project")
+      label Build single project
+    p
+      input(type='text', id="specific-project", class="hide", placeholder="Name of Project")
+  #button-container
+    button#watch-project Watch Project
+    button#unwatch-project.hide Unwatch Project
+
+  script(id='message-template', type='text/x-handlebars-template')
+    <div class="message">
+    <h2>{{status}}</h2>
+    <span class='time-stamp'>{{dateCreated}}</span>
+    <a href='#'>show log</a>
+    <div class="log-item hide">
+    <code>{{log}}</code>
+    </div>
+    </div>
+
+  

@@ -1,7 +1,15 @@
 doctype 5
 html
   head
-    title= title
+    title Montreal Build Monitor
+    link(rel='stylesheet', href='/stylesheets/reset.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='socket.io/socket.io.js')
+    script(src='javascripts/lib/jquery.js')
+    script(src='javascripts/lib/handlebars.js')
+    script(src='javascripts/application.js')
   body
-    block content
+    #wrapper
+      header
+        h1 Montreal Build Monitor
+      block content
