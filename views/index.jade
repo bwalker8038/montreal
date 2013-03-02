@@ -5,17 +5,11 @@ block content
   #message-list
   #options-container
     p
-      input(type='text', id="watch-path", placeholder='Path to Watch')
+      input(type='text', id="solution-path", placeholder='Path of Solution to build');
     p
-      input(type='text', id="project-path", placeholder='Path of Solution to build');
-    p
-      input(type='checkbox', id="build-single-project")
-      label Build single project
-    p
-      input(type='text', id="specific-project", class="hide", placeholder="Name of Project")
+      input(type='text', id="specific-project", placeholder="Name of Project")
   #button-container
-    button#watch-project Watch Project
-    button#unwatch-project.hide Unwatch Project
+    button#build-project Build Project
 
   script(id='message-template', type='text/x-handlebars-template')
     <div class="message">

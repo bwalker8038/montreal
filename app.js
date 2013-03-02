@@ -19,7 +19,7 @@ var app = express()
   , io = require('socket.io').listen(server);
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 4000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -54,67 +54,64 @@ server.listen(app.get('port'), function() {
 });
 
 io.sockets.on('connection', function(socket) {
-    socket.on('file', function(data) {
-        console.log(data);
+    socket.on('project', function(data) {
+        var error_count = null
+            , status  = null
+            , command = [
+                '/s', '/c', 
+                'msbuild ' + data.solutionPath + ' /m'
+            ];
 
-        var pathToWatch = data.pathToWatch
-          , projectPath = data.ProjectPath
-          , specificProjectPath = data.specificProjectPath
-          , activeState = data.activeState
-          , command = 'ls'
-          , connectionNumber = 
+        if(data.projectName !== '') {
+            var command = [
+                    '/s', '/c', 
+                    'msbuild ' + data.solutionPath + ' /m /t:' + data.projectName
+                ] ;
+        }
 
-          console.log(data)
-          /*
-          , command = "msbuild " + ProjectPath + " /m";
-          if(specificProjectPath !== null) {
-              command = command + " /t:" + specificProjectPath;
-          }
-          */
+        // Log Messages
+        util.log('\033[32m'+'info: \033[0m build started');
 
-          var watcher = chokidar.watch(pathToWatch, {persistent: true});
+        var spawnCommand = spawn('cmd', command);
+        spawnCommand.stdout.setEncoding('utf8');
+        spawnCommand.stdout.on('data', function(data) {
+            util.log('\033[32m' + 'info: ' + '\033[0m' + data);
+             
+            var lines = data.split('\n')
+              , outputFinished = false;
 
-          if(activeState === true ) {
-
-                util.log('\033[32m'+'info: ' + '\033[0m' + pathToWatch + ' is being watched');
-                   
-                watcher.on('change', function(path) { 
-                    util.log('\033[32m' +'info: '+ '\033[0m' + path + ' has updated');
+            lines.forEach(function(str) {
+                if(str.match('0 Error(s)') == null) {
+                    error_count += 1;
+                }
                     
-                    var spawnCommand = spawn(command);
-                    spawnCommand.stdout.setEncoding('utf8');
-                    spawnCommand.stdout.on('data', function(data) {
-                        util.log('\033[32m' + 'info: ' + '\033[0m' + data);
-                        
-                        var lines = data.split('\n')
-                          , error_count
-                          , status;
-                        
-                        lines.forEach(function(str) {
-                            if(str.match('not found') !== null) {
-                                error_count += 1;
-                            }
-                        });
+                while(str.match('Error' !== null)) {
+                    outputFinished = true;
+                }
+            });
+            
+            if (outputFinished === true) {
+                if(error_count > 0 ) {
+                    status = "App Build Failed. Please Check the Error Log.";
+                    success = false;
+                } else {
+                    status = "App Build was Successful.";
+                    success = true;
+                }
 
-                        if(error_count > 0 ) {
-                            status = "App Build Failed. Please Check the Error Log.";
-                        } else {
-                            status = "App Build was Successful.";
-                        }
-
-                        socket.emit('message', {status: status, log:data, dateCreated: new Date()});
-                        util.log('\033[32m' + 'info: ' + '\033[0m' + status);
-                        socket.on('unwatch', function(data) {
-                            if(data.activeState === false) {
-                                util.log('\033[32m' + 'info: ' + '\033[0m' + 'shutting down watcher and spawnCommand Process');
-                                watcher.close();
-                                spawnCommand.kill();
-                            }
-                        });
-                    });
+                socket.emit('message', { 
+                        status: status, 
+                        log: data, 
+                        success: success,
+                        dateCreated: new Date()
                 });
-          }
-        }); 
+
+                util.log('\033[32m' + 'info: ' + '\033[0m' + status);
+            }
+        });
+
+        
+    }); 
 });
 
 

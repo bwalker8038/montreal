@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Montreal Build Monitor</title>
+    <link rel="stylesheet" href="/stylesheets/reset.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="socket.io/socket.io.js"></script>
+    <script src="javascripts/lib/jquery.js"></script>
+    <script src="javascripts/lib/handlebars.js"></script>
+    <script src="javascripts/application.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header>
+        <h1>Montreal Build Monitor</h1>
+      </header>
+      <div id="message-list"></div>
+      <div id="options-container">
+        <p>
+          <input type="text" id="solution-path" placeholder="Path of Solution to build">
+        </p>
+        <p>
+          <input type="text" id="specific-project" placeholder="Name of Project">
+        </p>
+      </div>
+      <div id="button-container">
+        <button id="build-project">Build Project</button>
+      </div>
+      <script id="message-template" type="text/x-handlebars-template">
+        <div class="message">
+        <h2>{{status}}</h2>
+        <span class='time-stamp'>{{dateCreated}}</span>
+        <a href='#'>show log</a>
+        <div class="log-item hide">
+        <code>{{log}}</code>
+        </div>
+        </div>
+      </script>
+    </div>
+  </body>
+</html>
