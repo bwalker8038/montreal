@@ -15,7 +15,7 @@ Montreal.Project = (function ($, socket, Handlebars) {
 
     var view = {
         source: function() {
-            return $('message-template').html();
+            return $('#message-template').html();
         },
 
         template: function() {
@@ -27,6 +27,7 @@ Montreal.Project = (function ($, socket, Handlebars) {
         init: function() {
             methods.buildSolution();
             methods.messageListener();
+            methods.showOptions();
         },
 
         buildSolution: function() {
@@ -42,12 +43,20 @@ Montreal.Project = (function ($, socket, Handlebars) {
 
         messageListener: function() {
             socket.on('message', function(data) {
-                //var html = view.template(data);
-                //$('#message-list').append(html);
-                 console.log(data);
-                if(data.success === true) {
-                    $('#options-container').slideDown();
-                }
+                var source = $('#message-template').html(),
+                    template = Handlebars.compile(source),
+                    html = template(data);
+
+                $('#message-list').fadeIn(250, function() {
+                   $(this).append(html); 
+                });
+                console.log(data);
+            });
+        },
+
+        showOptions: function() {
+            $('#options-button').on('click', function(e) {
+                $('#options-container').slideDown();
             });
         }
     };

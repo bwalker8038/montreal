@@ -78,39 +78,34 @@ io.sockets.on('connection', function(socket) {
             util.log('\033[32m' + 'info: ' + '\033[0m' + data);
              
             var lines = data.split('\n')
-              , outputFinished = false;
+              , success;
 
             lines.forEach(function(str) {
-                if(str.match('0 Error(s)') == null) {
-                    error_count += 1;
+                if(str.match('Build Succeeded') > -1 ) {
+                    success = true;
+                } else {
+                    success = false;
                 }
-                    
-                while(str.match('Error' !== null)) {
-                    outputFinished = true;
+                
+                while(str.indexOf('Time Elapsed') > -1) {
+                    if(success === true) {
+                        status = "App Build was successful.";
+                    } else if(success === false) {
+                        status = "App build failed. Please check the log for errors.";
+                    } else {
+                        status = "You where eaten by a grue. Something went wrong."
+                    }
+
+                    socket.emit('message', { 
+                        status: status, 
+                        log: lines, 
+                        success: success,
+                        dateCreated: new Date().toUTCString()
+                    });
+                    break;
                 }
             });
-            
-            if (outputFinished === true) {
-                if(error_count > 0 ) {
-                    status = "App Build Failed. Please Check the Error Log.";
-                    success = false;
-                } else {
-                    status = "App Build was Successful.";
-                    success = true;
-                }
-
-                socket.emit('message', { 
-                        status: status, 
-                        log: data, 
-                        success: success,
-                        dateCreated: new Date()
-                });
-
-                util.log('\033[32m' + 'info: ' + '\033[0m' + status);
-            }
         });
-
-        
     }); 
 });
 

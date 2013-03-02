@@ -50,6 +50,10 @@ header {
     font: normal 2em "Helvetica neue", Helvetica, sans-serif; 
     text-align: center; 
 }
+.message span {
+    text-align: center;
+    display: block;
+}
 
 #options-container {
     background: #f7f7f7;
