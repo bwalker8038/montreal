@@ -7,6 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
+  , https = require('https')
   , path = require('path')
   , fs = require('fs')
   , util = require('util')
@@ -14,8 +15,13 @@ var express = require('express')
   , spawn = require('child_process').spawn;
 
 
+var options = {
+    key:  fs.readFileSync('cert.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
 var app = express()
-  , server = http.createServer(app)
+  , server = https.createServer(options, app)
   , io = require('socket.io').listen(server);
 
 app.configure(function(){

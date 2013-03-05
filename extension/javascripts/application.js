@@ -1,8 +1,6 @@
-window.socket = io.connect();
-
 Montreal = {};
 
-Montreal.Project = (function ($, socket, Handlebars) {
+Montreal.Project = (function ($) {
     var properties = { 
         solutionPath: function() {
             return $('#solution-path').val();
@@ -13,51 +11,28 @@ Montreal.Project = (function ($, socket, Handlebars) {
         }
     };
 
-    var view = {
-        source: function() {
-            return $('#message-template').html();
-        },
-
-        template: function() {
-            return Handlebars.compile(view.source());
-        }
-    };
-
     var methods = {
         init: function() {
             methods.buildSolution();
-            methods.messageListener();
-            methods.showOptions();
         },
 
         buildSolution: function() {
             $('#build-project').on('click', function(e) {
-                socket.emit('project', {
+                var data = {
                     solutionPath: properties.solutionPath(),
-                    projectName: properties.projectName()
-                });
+                    projectName:  properties.projectName()
+                };
 
-                $('#options-container').slideUp();
+                Socket.postTask(data);
             });
         },
 
-        messageListener: function() {
-            socket.on('message', function(data) {
-                var source = $('#message-template').html(),
-                    template = Handlebars.compile(source),
-                    html = template(data);
-
-                $('#message-list').fadeIn(250, function() {
-                   $(this).append(html); 
-                });
-                console.log(data);
-            });
-        },
-
-        showOptions: function() {
-            $('#show-options').on('click', function(e) {
-                e.preventDefault();
-                $('#options-container').slideDown();
+        saveOptions: function() {
+            chrome.storage.sync.set({
+                'buildSoution': properties.solutionPath(), 
+                'projectName':  properties.projectName()
+            }, function() {
+                console.log("build options saved");
             });
         }
     };
@@ -65,7 +40,7 @@ Montreal.Project = (function ($, socket, Handlebars) {
     return {
         init: methods.init
     };
-}(jQuery, socket, Handlebars));
+}(jQuery));
 
 
 $(document).ready(function() {

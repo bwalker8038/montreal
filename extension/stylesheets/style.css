@@ -2,7 +2,6 @@ body {
     margin: 0 auto;
     padding: 0;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background: url(../images/billie_holiday.png) repeat;
 }
 
 @font-face {
@@ -28,20 +27,13 @@ a {
 
 #wrapper { 
     margin: 0 auto; 
-    width: 600px; 
-    background: #fff; 
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-bottom-left-radius: 1em;
-    border-bottom-right-radius: 1em;
+    width: 400px; 
 }
 
 header {
     height: 60px;
-    background: #fff url(../images/border.png) repeat-x -500% 0;
     text-align: center; 
-    padding-top: 10px; 
+    padding-top: 1em; 
     border-bottom: 1px solid #ccc;
 }
 
@@ -63,30 +55,24 @@ header {
 }
 
 #options-container p {
-    width: 50%;
+    width: 90%;
     display: block;
-    margin: 1em auto;
-    font-size: 1.5em
-}
-
-#options-container input[type=checkbox] {
-    position: relative;
-    top: -2px
-}
-
-#options-container label {
-    margin-left: .5em;
+    margin: .5em auto;
+    font-size: 1em
 }
 
 #button-container { 
     padding: 1em 0 1em 0;
 }
 
+#options-container input {
+    width: 100%;
+    font-size: 1.5em;
+}
+
 button {
     margin: 0 auto;
     display: block;
-    width: 260px;
-    height: 50px;
     font: normal 2em "Helvetica neue", Helvetica, sans-serif;
     background: #39B2E5;
     color: #fff;
