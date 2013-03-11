@@ -14,6 +14,7 @@ Montreal.Project = (function ($) {
     var methods = {
         init: function() {
             methods.buildSolution();
+            methods.loadOptions();
         },
 
         buildSolution: function() {
@@ -24,6 +25,7 @@ Montreal.Project = (function ($) {
                 };
 
                 Socket.postTask(data);
+                methods.saveOptions();
             });
         },
 
@@ -33,6 +35,18 @@ Montreal.Project = (function ($) {
                 'projectName':  properties.projectName()
             }, function() {
                 console.log("build options saved");
+            });
+        },
+
+        loadOptions: function() {
+            var $project = $('#specific-project'),
+                $path    = $('#solution-path');
+
+            chrome.storage.local.get(['buildSolution', 'projectName'], function(data) {
+                if(data.length > 0) {
+                    $path.val(data.buildSolution);
+                    $project.val(data.projectName);
+                }
             });
         }
     };
